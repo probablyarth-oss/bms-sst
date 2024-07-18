@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetCurrentUser } from "../calls/users";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { message, Layout, Menu } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../redux/loaderSlice";
@@ -18,6 +18,16 @@ function ProtectedRoute({ children }) {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (user && user.role !== "admin" && location.pathname === "/admin") {
+      navigate("/profile");
+    }
+    if (user && user.role !== "partner" && location.pathname === "/partner") {
+      navigate("/profile");
+    }
+  }, [location.pathname, user]);
 
   const navItems = [
     {
